@@ -39,4 +39,24 @@ class EligibilityService {
       return obj[part];
     }, cart);
   }
+
+    /**
+   * Vérifie si une valeur satisfait une condition.
+   * @param {*} value - La valeur à tester.
+   * @param {*} condition - La condition à vérifier.
+   * @returns {boolean} - True si la condition est remplie, sinon false.
+   */
+    matchCondition(value, condition) {
+      if (typeof condition === 'object' && condition !== null) {
+        const operators = ['gt', 'lt', 'gte', 'lte', 'in', 'and', 'or'];
+        for (const operator of operators) {
+          if (condition[operator] !== undefined) {
+            return this.evaluateCondition(value, operator, condition[operator]);
+          }
+        }
+      }
+      return value == condition;
+    }
 }
+
+module.exports = { EligibilityService };

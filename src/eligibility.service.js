@@ -57,6 +57,28 @@ class EligibilityService {
       }
       return value == condition;
     }
+
+    /**
+   * Évalue une condition en fonction de l'opérateur.
+   * @param {*} value - La valeur à tester.
+   * @param {string} operator - L'opérateur de la condition.
+   * @param {*} conditionValue - La valeur de la condition.
+   * @returns {boolean} - True si la condition est remplie, sinon false.
+   */
+  evaluateCondition(value, operator, conditionValue) {
+    const operations = {
+      'gt': (a, b) => Number(a) > Number(b),
+      'lt': (a, b) => Number(a) < Number(b),
+      'gte': (a, b) => Number(a) >= Number(b),
+      'lte': (a, b) => Number(a) <= Number(b),
+      'in': (a, b) => b.includes(a),
+      'and': (_, b) => Object.keys(b).every(subKey => this.evaluateCondition(value, subKey, b[subKey])),
+      'or': (_, b) => Object.keys(b).some(subKey => this.evaluateCondition(value, subKey, b[subKey]))
+    };
+
+    return operations[operator] ? operations[operator](value, conditionValue) : value == conditionValue;
+  }
+
 }
 
 module.exports = { EligibilityService };
